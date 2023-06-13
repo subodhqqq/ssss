@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'PT Sans', sans-serif;
+        }
+
+        @page {
+            size: 2.8in 11in;
+            margin-top: 0cm;
+            margin-left: 0.5cm;
+            margin-right: 0.4cm;
+        }
+
+        table {
+            width: 100%;
+            /* border: 1px solid black; */
+        }
+
+        tr {
+            width: 100%;
+        }
+
+        td {
+            width: 100%;
+            border-top: 10px;
+            border-left: 5px;
+            
+        }
+
+        h1 {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #logo {
+            width: 60%;
+            text-align: center;
+            -webkit-align-content: center;
+            align-content: center;
+            padding: 5px;
+            margin: 2px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            -webkit-align-content: center;
+            align-content: center;
+            vertical-align: middle;
+        }
+
+        .items thead {
+            text-align: center;
+        }
+
+        .center-align {
+            text-align: center;
+        }
+
+        .bill-details td {
+            font-size: 9px;
+        }
+
+        .receipt {
+            font-size: small;
+        }
+
+        .items .heading {
+            font-size: 9px;
+            text-transform: uppercase;
+            border-top: 1px solid black;
+            margin-bottom: 4px;
+            border-bottom: 1px solid black;
+            border-right: 0;
+            vertical-align: middle;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        .items thead tr th:first-child,
+        .items tbody tr td:first-child {
+            width: 47%;
+            min-width: 47%;
+            max-width: 47%;
+            word-break: break-all;
+            text-align: left;
+        }
+
+        .items td {
+            font-size: 9px;
+            text-align: right;
+            vertical-align: bottom;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        .price::before {
+            content: "\20B9";
+            font-family: Arial;
+            text-align: right;
+        }
+
+        .sum-up {
+            text-align: right !important;
+        }
+
+        .total {
+            font-size: 9px;
+            border-top: 1px dashed black !important;
+            border-bottom: 1px dashed black !important;
+        }
+
+        .total.text,
+        .total.price {
+            text-align: right;
+        }
+
+        .total.price::before {
+            content: "\20B9";
+        }
+
+        .line {
+            border-top: 1px solid black !important;
+        }
+
+        p {
+            padding: 1px;
+            margin: 0;
+        }
+
+        section,
+        footer {
+            font-size: 9px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div id="logo" class="media" data-src="logo.png" src="./logo.png"></div>
+    </header>
+    <p style="text-align:center; font-size: 12px;"><strong>{{request.user.company.print_name}}</strong></p>
+    <p style="text-align:center; font-size: 12px;"><strong>{{request.user.company.email}}</strong></p>
+    <p style="text-align:center; font-size: 12px;"><strong>{{request.user.company.it_pan}}</strong></p>
+    <table class="bill-details">
+        <tbody>
+            <tr>
+                <td>Bill No : <span>{{purchase_data.voucherno}}</span></td>
+                <td>Customer Name: <span>{{purchase_data.party.name}}</span></td>
+                <!-- <td>Customer: <span>3</span></td> -->
+            </tr>
+            <tr>
+                <td>Bill Date : <span>{{purchase_data.formatted_nepalidate}}</span></td>
+                <td>Address : <span>{{purchase_data.party.address}}</span></td>
+            </tr>
+            <tr>
+                <th class="center-align" colspan="2"><span class="receipt"> Receipt</span></th>
+            </tr>
+        </tbody>
+    </table>
+    <table class="items" cellspacing="0">
+        <thead>
+            <tr cellspacing="0">
+                <th class="heading">Item</th>
+                <th class="heading">TQ</th>
+                <th class="heading">DQ</th>
+                <th class="heading">Qt</th>
+                <th class="heading">Rt</th>
+                <th class="heading">Amount</th>
+            </tr>
+        </thead>
+        <tbody> {% for purchaseItem in purchase_items %} <tr>
+                <td>{{purchaseItem.item.name}}</td>
+                <td>{{purchaseItem.totquantity}}</td>
+                <td>{{purchaseItem.dedquantity}}</td>
+                <td>{{purchaseItem.quantity}}</td>
+                <td class="price">{{purchaseItem.formatted_price}}</td>
+                <td class="price">{% if purchase_data.is_line_discount %}{{purchaseItem.formatted_amount}}{% else
+                    %}{{purchaseItem.formatted_amount}}{% endif %}</td>
+            </tr> {% endfor %} <tr>
+                <td colspan="5" class="sum-up line">Subtotal</td>
+                <td class="line price">{{purchase_data.total_amount}}</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="sum-up">Commission(2%)</td>
+                <td class="price">{{purchase_data.commision_amount}}</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="sum-up">Weighing Charge</td>
+                <td class="price">{{purchase_data.kata_amount}}</td>
+            </tr> <!-- <tr>--> <!-- <td colspan="5" class="sum-up">Total Amount</td>-->
+            <!-- <td class="price">{{purchase_data.total_amount|add:purchase_data.commision_amount}}</td>-->
+            <!--</tr>-->
+            <tr>
+                <th colspan="5" class="total text">Total Service charge</th>
+                <th class="total price">{{purchase_data.commision_amount|add:purchase_data.kata_amount}}</th>
+            </tr>
+            <tr>
+                <th colspan="5" class="total text">Net Amount</th>
+                <th class="total price">{{purchase_data.total_amount_inc_vat}}</th>
+            </tr>
+            <tr> <!--<td colspan="3" class="sum-up line">Narration</td>-->
+                <td class="line price">Narration:{{purchase_data.narration}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <section>
+        <p> Bill by : <span>User</span> </p>
+        <p style="text-align:center"> Thanks for your visit! </p>
+    </section>
+    <!-- <footer style="text-align:center"> <p>Technology Partner Dotworld Technologies</p> <p>www.dotworld.in</p> </footer> -->
+</body>
+
+</html>
+
+
+
+

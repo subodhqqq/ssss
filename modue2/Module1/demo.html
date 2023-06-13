@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table</title>
+    <style>
+        td{
+            padding: 10px;
+        }
+        th{
+            background-color: rgb(39, 39, 180);
+            color: white;
+        }
+        .dvi{
+            float: right;
+        }
+        tbody tr{
+            background-color: orange;
+        }
+        tr{
+            border-radius: 50px;
+            border-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <body>
+        <div class="dvi">
+            <button onclick="addRow()">Add Row</button>
+            <!-- <button onclick="deleteRow(this)">Delete Row</button> -->
+        </div>
+        <table id="myTable" border="1" cellspacing="0" width="950px">
+            <thead>
+                <tr >
+                    <th width="10px">sno.</th>
+                    <th width="60px">D/C</th>
+                    <th width="300px">Accounts</th>
+                    <th width="35px">Debits (Rs)</th>
+                    <th width="35px">Credits (Rs)</th>
+                    <th width="35px">Short Narration</th>
+                    <th width="35px">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Row 1, Column 2</td>
+                    <td>Row 1, Column 3</td>
+                    <td>Row 1, Column 3</td>
+                    <td>Row 1, Column 3</td>
+                    <td>Row 1, Column 3</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td>Row 1, Column 2</td>
+                    <td>Row 1, Column 3</td>
+                    <td>Row 1, Column 3</td>
+                    <td>Row 1, Column 3</td>
+                    <td>Row 1, Column 3</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td>Row 1, Column 2</td>
+                    <td>Row 1, Column 3</td>
+                    <td>Row 1, Column 3</td>
+                    <td>Row 1, Column 3</td>
+                    <td>Row 1, Column 3</td>
+                    <td><button onclick="deleteRow(this)">Delete</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <script>
+            function addRow() {
+                let table = document.getElementById("myTable");
+                let row = table.insertRow(-1); // insert new row at the end
+                let sn = row.insertCell(0);
+                let dc = row.insertCell(1);
+                let accounts = row.insertCell(2);
+                let debits = row.insertCell(3);
+                let credits = row.insertCell(4);
+                let narration = row.insertCell(5);
+                let deleteCell = row.insertCell(6);
+                var n = 7;
+                for(i= 1; i<n;i++){
+                    sn.innerHTML = i
+                }
+                dc.innerHTML = "20";
+                accounts.innerHTML = '98098';
+                debits.innerHTML = 'wdfsffd';
+                credits.innerHTML = 'wdfsffd';
+                narration.innerHTML = 'wdfsffd';
+                deleteCell.innerHTML = "<button onclick='deleteRow(this)'>Delete</button>"; 
+            }
+    
+            function deleteRow(button) {
+                // Find the row that contains the button
+                let row = button.parentNode.parentNode;
+                // Remove the row from the table
+                row.parentNode.removeChild(row);
+            }
+        </script>
+        
+        <!-- <script src="index.js"></script> -->
+    </body>
+</html>

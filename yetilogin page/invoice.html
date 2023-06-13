@@ -1,0 +1,301 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Purchase Invoice</title>
+    <style>
+        .heading {
+            font-size: 12px;
+            font-display: bold;
+            text-align: center;
+            /* padding-top: 50px; */
+        }
+
+        .subheading {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .Sales_detail {
+            width: 60%;
+        }
+
+        .col-12 {
+            width: 100%;
+            float: left;
+        }
+
+        .col-3 {
+            width: 25%;
+            float: left;
+        }
+
+        .col-6 {
+            width: 50%;
+            float: left;
+        }
+
+        .textalignright {
+            text-align: right;
+            font-size: 12px;
+        }
+
+        .detail {
+            font-size: 12px;
+            /* font-weight: bold; */
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 3px 3px 0px 3px;
+        }
+
+        .w-5 {
+            width: 10%;
+        }
+
+        .w-25 {
+            width: 50%;
+        }
+
+        .border {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .wid {
+            width: 86%;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        .terms {
+            display: flex;
+            /* border: 1px solid black; */
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        .lef {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .under {
+            text-decoration: underline;
+        }
+
+        .rig {
+            width: 100%;
+            border: 1px solid black;
+        }
+
+        .hr {
+            width: 100%;
+        }
+
+        .rig-top {
+            margin-left: 20px;
+        }
+
+        .rig-bottom {
+            float: right;
+            /* margin-right: 10px; */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container wid">
+        <div class="Company_profile border">
+            <div class="row">
+                <div class="col-12 subheading">
+                    <h3 class="float-left">TAX INVOICE</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 heading">
+                    <h1 class="text-white">{{request.user.company.print_name}}</h1>
+                </div>
+            </div>
+            <div class="row">
+                <table style="width:100%; border:none;">
+                    <tr style="border:none;">
+                        <td style="width:33.33%; border:none;"></td>
+                        <td style="width:33.33%; border:none; text-align:center;">Email :
+                            {{request.user.company.email}}
+                        </td>
+                        <td style="width:33.33%; border:none; text-align:right;">Times Printed
+                            :{{purchase_data.pdf_print_count}}</td>
+                    </tr>
+                    <tr style="border:none;">
+                        <td style="width:33.33%; border:none;"></td>
+                        <td style="width:33.33%; border:none; text-align:center;">VAT Registration No:
+                            {{request.user.company.it_pan}}</td>
+                        <td style="width:33.33%; border:none; text-align:right;">Copy of Original</td>
+                    </tr>
+                </table>
+            </div>
+            <!-- <div class="row">
+                <div class="col-12 subheading">
+                    <h3 class="float-left">TAX INVOICE</h3>
+                </div>
+            </div> -->
+        </div>
+        <div class="Customer_info border">
+            <div class="row">
+                <table style="width:100%; border:none;">
+                    <tr style="border:none;">
+                        <td style="width:50%; border:none;" class="detail">Invoice No.:{{purchase_data.voucherno}}
+                        </td>
+                        <td style="width:50%; border:none; text-align:right;" class="detail">Invoice Date
+                            :{{purchase_data.formatted_nepalidate}}
+                        </td>
+                    </tr>
+                    <tr style="border:none;">
+                        <td style="width:50%; border:none;" class="detail">Customer
+                            Name:{{purchase_data.party.name}}</td>
+                        <td style="width:50%; border:none;"></td>
+                    </tr>
+                    <tr style="border:none;">
+                        <td style="width:50%; border:none;" class="detail">Customer Address
+                            :{{purchase_data.party.address}}</td>
+                        <td style="width:50%; border:none;"></td>
+                    </tr>
+                    <tr style="border:none;">
+                        <td style="width:50%; border:none;" class="detail">Customer's VAT/PAN
+                            No:{{purchase_data.party.it_pan}}</td>
+                        <td style="width:50%; border:none;"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="Sales_detail">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="w-5">S.N</th>
+                        <th class="w-25">Particulars</th>
+                        <th class="w-5">Qty</th>
+                        <th class="w-5">Unit </th>
+                        <th class="w-5"> Price</th>
+                        <th class="w-5">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchaseItem in purchase_items %}
+                    <tr>
+                        <td scope="row">{{ forloop.counter }}</th>
+                        <td>{{purchaseItem.item.name}}</td>
+                        <td>{{purchaseItem.quantity}}</td>
+                        <td>{{purchaseItem.unit.name}}</td>
+                        <td>{{purchaseItem.formatted_price}}</td>
+                        <td>{% if purchase_data.is_line_discount %}{{purchaseItem.formatted_amount}}{% else
+                            %}{{purchaseItem.formatted_amount}}{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="5" style="text-align:left;">Total Amount</td>
+                        <td>{{purchase_data.total_amount}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align:left;">Discount Amount</td>
+                        <td>{{purchase_data.trade_discount_amount}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align:left;">Total Taxable Amount</td>
+                        <td>{{purchase_data.taxable_amount}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align:left;">13% VAT</td>
+                        <td>{{purchase_data.vat_amount}}</td>
+                    </tr>
+                    {% if is_commision_client %}
+                    <tr>
+                        <td colspan="5" style="text-align:left; font-weight:Bold;">Commision
+                            Amount({{commision_rate}}%)</td>
+                        <td style="font-weight:Bold;">{{purchase_data.commision_amount}}</td>
+                    </tr>
+                    <!-- <tr>
+                        <td colspan="5" style="text-align:left; font-weight:Bold;">Kata (Rs)</td>
+                        <td style="font-weight:Bold;">{{purchase_data.kata_amount}}</td>
+                    </tr> -->
+                    {% endif %}
+                    <tr>
+                        <td colspan="5" style="text-align:left; font-weight:Bold;">Total NPR Incl. VAT</td>
+                        <td style="font-weight:Bold;">{{purchase_data.total_amount_inc_vat}}</td>
+
+                    </tr>
+                    <tr>
+                        <td class="row" colspan="2">
+                            <div class="col-12 detail">
+                                <p><b>Total Amount in Words :</b>
+                                </p>
+                            </div>
+                        </td>
+                        <td style="border:0px;">
+                            {{purchase_data.formatted_amountwords}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="terms">
+            <div class="lef">
+                <h4 class="under">Terms and Conditions</h4>
+                <h5>E. & O.E.</h5>
+                <p>1. Goods once sold will not be taken back. </p>
+                <p>2. Interest @ 18% p.a. will be charged if the payment is not made with in the stipulated time</p>
+            </div>
+            <div class="rig">
+                <div class="rig-top">
+                    <h4>Receiver's Signature: </h4>
+                </div>
+                <hr class="hr">
+                <div class="rig-bottom">
+                    <h3>For Ganga Jamuna Hardware Center</h3>
+                    <div class="footer" style="margin-top:100px ;">
+                        <table style="width:100%; border:none;">
+                            <!-- <tr style="border:none;">
+                                <td style="width:100%; border:none;">
+                                    <p class="text-left">(E. & O. E) Goods once sold are not exchangeable or returnable.</p>
+                                </td>
+                            </tr> -->
+                            <tr style="border:none;">
+                                <td style="width:50%; border:none;"></td>
+                                <td style="width:50%; border:none; text-align:right;">-----------------------------</td>
+                            </tr>
+                            <tr style="border:none;">
+                                <td style="width:50%; border:none;"></td>
+                                <td style="width:50%; border:none; text-align:right;">Authorised Signatory</td>
+                            </tr>
+                            <tr style="border:none;">
+                                <td style="width:50%; border:none;"></td>
+                                <td style="width:50%; border:none; text-align:right;">Printed On :
+                                    {{purchase_data.formatted_nepalidate}}</td>
+                            </tr>
+                            <tr style="border:none;">
+                                <td style="width:50%; border:none;"></td>
+                                <td style="width:50%; border:none; text-align:right;">Printed By:
+                                    {{request.user.username}}</td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</body>
+
+</html>

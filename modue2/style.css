@@ -1,0 +1,16 @@
+div{
+
+    display: flex;
+    background-color: black;
+}
+div.a{
+    background-color: aqua;
+    height: 500px;
+    width: 500px;
+}
+
+div.b{
+    background-color: rgb(180, 17, 25);
+    height: 500px;
+    width: 500px;
+}
